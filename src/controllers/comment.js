@@ -8,12 +8,11 @@ const getAllComments = async (req, res) => {
 			.populate('order');
 
 		return res.status(200).json({
-			data: comments,
+			comments,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener los comentarios',
-			data: undefined,
 			error,
 		});
 	}
@@ -32,17 +31,15 @@ const getCommentById = async (req, res) => {
 			return res.status(404).json({
 				message:
 					'El comentario que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
 		return res.status(200).json({
-			data: comment,
+			comment,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener el comentario',
-			data: undefined,
 			error,
 		});
 	}
@@ -50,15 +47,14 @@ const getCommentById = async (req, res) => {
 
 const createComment = async (req, res) => {
 	try {
-		const commentCreated = await Comment.create(req.body);
+		const newComment = await Comment.create(req.body);
 		return res.status(200).json({
 			message: 'Comentario creado correctamente!',
-			data: commentCreated,
+			newComment,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al crear comentario',
-			data: undefined,
 			error,
 		});
 	}
@@ -75,18 +71,15 @@ const deleteComment = async (req, res) => {
 			return res.status(404).json({
 				message:
 					'El comentario que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
 		return res.status(200).json({
 			message: 'Comentario eliminado!',
-			data: undefined,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al eliminar comentario',
-			data: undefined,
 			error,
 		});
 	}

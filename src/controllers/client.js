@@ -6,13 +6,12 @@ const getAllClients = async (req, res) => {
 		const clients = await Client.find().populate('orders');
 
 		return res.status(200).json({
-			data: clients,
+			clients,
 		});
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({
 			message: 'Error al obtener los clientes',
-			data: undefined,
 			error,
 		});
 	}
@@ -29,17 +28,15 @@ const getClientById = async (req, res) => {
 		if (!client) {
 			return res.status(404).json({
 				message: 'El cliente que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
 		return res.status(200).json({
-			data: client,
+			client,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener al cliente',
-			data: undefined,
 			error,
 		});
 	}
@@ -64,20 +61,18 @@ const createClient = async (req, res) => {
 		});
 		if (alreadyExists) {
 			return res.status(400).json({
-				message: 'Ese nombre de cliente ya está ocupado',
-				data: req.body.companyName,
+				message: `El nombre de cliente ${req.body.companyName} ya está ocupado`,
 			});
 		}
 
-		const clientCreated = await Client.create(req.body);
+		const newClient = await Client.create(req.body);
 		return res.status(200).json({
 			message: 'Cliente creado correctamente!',
-			data: clientCreated,
+			newClient,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al crear cliente',
-			data: undefined,
 			error,
 		});
 	}
@@ -92,7 +87,6 @@ const updateClient = async (req, res) => {
 		if (!clientToUpdate) {
 			return res.status(404).json({
 				message: 'El cliente que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
@@ -101,30 +95,25 @@ const updateClient = async (req, res) => {
 		});
 		if (
 			alreadyExists &&
-			!alreadyExists._id.equals(
-				mongoose.Types.ObjectId.isValid(id)
-			)
+			!alreadyExists._id.equals(clientToUpdate._id)
 		) {
 			return res.status(400).json({
-				message: 'Ese nombre de cliente ya está ocupado',
-				data: req.body.companyName,
+				message: `El nombre de cliente ${req.body.companyName} ya está ocupado`,
 			});
 		}
-
-		const clientUpdated = await Client.findByIdAndUpdate(
+		const updatedClient = await Client.findByIdAndUpdate(
 			id,
 			req.body,
 			{ new: true }
 		);
 		return res.status(200).json({
 			message: 'Cliente actualizado!',
-			data: clientUpdated,
+			updatedClient,
 		});
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({
 			message: 'Error al actualizar cliente',
-			data: undefined,
 			error,
 		});
 	}
@@ -140,18 +129,15 @@ const deleteClient = async (req, res) => {
 		if (!clientToDelete) {
 			return res.status(404).json({
 				message: 'El cliente que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
 		return res.status(200).json({
 			message: 'Cliente eliminado!',
-			data: undefined,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al eliminar cliente',
-			data: undefined,
 			error,
 		});
 	}

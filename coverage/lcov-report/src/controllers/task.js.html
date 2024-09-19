@@ -188,16 +188,7 @@
 <a name='L123'></a><a href='#L123'>123</a>
 <a name='L124'></a><a href='#L124'>124</a>
 <a name='L125'></a><a href='#L125'>125</a>
-<a name='L126'></a><a href='#L126'>126</a>
-<a name='L127'></a><a href='#L127'>127</a>
-<a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a>
-<a name='L130'></a><a href='#L130'>130</a>
-<a name='L131'></a><a href='#L131'>131</a>
-<a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L126'></a><a href='#L126'>126</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -215,7 +206,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -240,13 +230,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -268,7 +256,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -279,7 +266,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -292,7 +278,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -310,14 +295,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -344,13 +326,12 @@ const getAllTasks = async (req, res) =&gt; {
 			.populate('stations');
 &nbsp;
 		return res.status(200).json({
-			data: tasks,
+			tasks,
 		});
 	} catch (error) {
 <span class="cstat-no" title="statement not covered" >		console.log(error);</span>
 <span class="cstat-no" title="statement not covered" >		return res.status(500).json({</span>
 			message: 'Error al obtener las tareas',
-			data: undefined,
 			error,
 		});
 	}
@@ -371,17 +352,15 @@ const getTaskById = async (req, res) =&gt; {
 		if (!task) {
 			return res.status(404).json({
 				message: 'La tarea que estás buscando no existe',
-				data: undefined,
 			});
 		}
 &nbsp;
 		return res.status(200).json({
-			data: task,
+			task,
 		});
 	} catch (error) {
 <span class="cstat-no" title="statement not covered" >		return res.status(500).json({</span>
 			message: 'Error al obtener la Tarea',
-			data: undefined,
 			error,
 		});
 	}
@@ -389,15 +368,14 @@ const getTaskById = async (req, res) =&gt; {
 &nbsp;
 const createTask = async (req, res) =&gt; {
 	try {
-		const taskCreated = await Task.create(req.body);
+		const newTask = await Task.create(req.body);
 		return res.status(200).json({
 			message: 'Tarea creada correctamente!',
-			data: taskCreated,
+			newTask,
 		});
 	} catch (error) {
 <span class="cstat-no" title="statement not covered" >		return res.status(500).json({</span>
 			message: 'Error al crear la tarea',
-			data: undefined,
 			error,
 		});
 	}
@@ -410,24 +388,22 @@ const updateTask = async (req, res) =&gt; {
 		if (!taskToUpdate) {
 			return res.status(404).json({
 				message: 'La tarea que estás buscando no existe',
-				data: undefined,
 			});
 		}
 &nbsp;
-		const taskUpdated = await Task.findByIdAndUpdate(
+		const updatedTask = await Task.findByIdAndUpdate(
 			id,
 			req.body,
 			{ new: true }
 		);
 		return res.status(200).json({
 			message: 'Tarea actualizada!',
-			data: taskUpdated,
+			updatedTask,
 		});
 	} catch (error) {
 <span class="cstat-no" title="statement not covered" >		console.log(error);</span>
 <span class="cstat-no" title="statement not covered" >		return res.status(500).json({</span>
 			message: 'Error al actualizar la tarea',
-			data: undefined,
 			error,
 		});
 	}
@@ -441,18 +417,15 @@ const deleteTask = async (req, res) =&gt; {
 		if (!taskToDelete) {
 			return res.status(404).json({
 				message: 'La tarea que estás buscando no existe',
-				data: undefined,
 			});
 		}
 &nbsp;
 		return res.status(200).json({
 			message: 'Tarea eliminada!',
-			data: undefined,
 		});
 	} catch (error) {
 <span class="cstat-no" title="statement not covered" >		return res.status(500).json({</span>
 			message: 'Error al eliminar la tarea',
-			data: undefined,
 			error,
 		});
 	}
@@ -472,7 +445,7 @@ export default {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-09-11T13:24:25.496Z
+                at 2024-09-19T16:49:09.660Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

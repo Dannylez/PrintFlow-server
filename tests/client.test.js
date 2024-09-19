@@ -39,7 +39,7 @@ describe('client REST', () => {
 	it('Debe traer lista de clientes', async () => {
 		const response = await request(app).get(`${url}`);
 		expect(response.statusCode).toBe(200);
-		expect(response.body.data).toHaveLength(2);
+		expect(response.body.clients).toHaveLength(2);
 	});
 	it('Debe traer un cliente por su id', async () => {
 		const response = await request(app).get(
@@ -53,7 +53,7 @@ describe('client REST', () => {
 			.send(newClient);
 
 		expect(created.statusCode).toBe(200);
-		expect(created.body.data).toMatchObject(newClient);
+		expect(created.body.newClient).toMatchObject(newClient);
 
 		const repeated = await request(app)
 			.post(`${url}`)
@@ -73,7 +73,9 @@ describe('client REST', () => {
 			.send(editedClient);
 
 		expect(edited.statusCode).toBe(200);
-		expect(edited.body.data).toMatchObject(editedClient);
+		expect(edited.body.updatedClient).toMatchObject(
+			editedClient
+		);
 
 		const repeated = await request(app)
 			.put(`${url}${clientId}`)

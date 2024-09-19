@@ -25,7 +25,7 @@ describe('task REST', () => {
 	it('Debe traer lista de tareas', async () => {
 		const response = await request(app).get(`${url}`);
 		expect(response.statusCode).toBe(200);
-		expect(response.body.data).toHaveLength(2);
+		expect(response.body.tasks).toHaveLength(2);
 	});
 	it('Debe traer una tarea por su id', async () => {
 		const response = await request(app).get(
@@ -39,7 +39,7 @@ describe('task REST', () => {
 			.send(newTask);
 
 		expect(created.statusCode).toBe(200);
-		expect(created.body.data).toMatchObject(newTask);
+		expect(created.body.newTask).toMatchObject(newTask);
 	});
 	it('Debe editar una tarea', async () => {
 		const wrongId = await request(app)
@@ -53,7 +53,9 @@ describe('task REST', () => {
 			.send(editedTask);
 
 		expect(edited.statusCode).toBe(200);
-		expect(edited.body.data).toMatchObject(editedTask);
+		expect(edited.body.updatedTask).toMatchObject(
+			editedTask
+		);
 	});
 	it('Debe eliminar una tarea', async () => {
 		const deleted = await request(app).delete(

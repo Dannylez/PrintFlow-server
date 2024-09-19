@@ -8,12 +8,11 @@ const getAllWorkStations = async (req, res) => {
 			.populate('responsible');
 
 		return res.status(200).json({
-			data: stations,
+			stations,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener las estaciones de trabajo',
-			data: undefined,
 			error,
 		});
 	}
@@ -31,17 +30,15 @@ const getWorkStationById = async (req, res) => {
 			return res.status(404).json({
 				message:
 					'La estación de trabajo que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
 		return res.status(200).json({
-			data: station,
+			station,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener la información',
-			data: undefined,
 			error,
 		});
 	}
@@ -56,8 +53,7 @@ const createWorkStation = async (req, res) => {
 		});
 		if (alreadyExists) {
 			return res.status(400).json({
-				message: 'Esa estación de trabajo ya existe',
-				data: req.body.name,
+				message: `Ya existe una estación con el nombre ${req.body.name}`,
 			});
 		}
 
@@ -66,12 +62,11 @@ const createWorkStation = async (req, res) => {
 		);
 		return res.status(200).json({
 			message: 'Estación de trabajo creada correctamente!',
-			data: stationCreated,
+			stationCreated,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al crear estación de trabajo',
-			data: undefined,
 			error,
 		});
 	}
@@ -80,15 +75,32 @@ const createWorkStation = async (req, res) => {
 const updateWorkStation = async (req, res) => {
 	const { id } = req.params;
 	const { name } = req.body;
+	const { tasks } = req.body;
 
 	try {
-		const stationToUpdate = await WorkStation.findById(id);
-		if (!stationToUpdate) {
+		const oldStation = await WorkStation.findById(id);
+		if (!oldStation) {
 			return res.status(404).json({
 				message:
 					'La estación de trabajo que estás buscando no existe',
-				data: undefined,
 			});
+		}
+
+		if (tasks && tasks.length === oldStation.tasks.length) {
+			const sameTasks = tasks.every(
+				(value, index) =>
+					value === oldStation.tasks[index].toString()
+			);
+			if (
+				sameTasks ||
+				(tasks.length === 0 &&
+					oldStation.tasks.length === 0)
+			) {
+				return res.status(400).json({
+					message:
+						'No se puede actualizar. El campo de tareas es idéntico al valor anterior.',
+				});
+			}
 		}
 
 		const alreadyExists = await WorkStation.findOne({
@@ -101,23 +113,22 @@ const updateWorkStation = async (req, res) => {
 			)
 		) {
 			return res.status(400).json({
-				message: 'Esa estación de trabajo ya existe',
-				data: req.body.name,
+				message: `Ya existe una estación con el nombre ${req.body.name}`,
 			});
 		}
 
-		const stationUpdated =
+		const updatedStation =
 			await WorkStation.findByIdAndUpdate(id, req.body, {
 				new: true,
 			});
 		return res.status(200).json({
 			message: 'Estación de trabajo actualizada!',
-			data: stationUpdated,
+			oldStation,
+			updatedStation,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al actualizar información',
-			data: undefined,
 			error,
 		});
 	}
@@ -133,18 +144,15 @@ const deleteWorkStation = async (req, res) => {
 			return res.status(404).json({
 				message:
 					'La estación de trabajo que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
 		return res.status(200).json({
 			message: 'Estación de trabajo eliminada!',
-			data: undefined,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al eliminar estación de trabajo',
-			data: undefined,
 			error,
 		});
 	}

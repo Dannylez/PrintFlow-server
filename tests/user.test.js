@@ -24,7 +24,7 @@ describe('user REST', () => {
 	it('Debe traer lista de usuarios', async () => {
 		const response = await request(app).get(`${url}`);
 		expect(response.statusCode).toBe(200);
-		expect(response.body.data).toHaveLength(2);
+		expect(response.body.users).toHaveLength(2);
 	});
 	it('Debe traer un usuario por su id', async () => {
 		const response = await request(app).get(
@@ -38,7 +38,7 @@ describe('user REST', () => {
 			.send(newUser);
 
 		expect(created.statusCode).toBe(200);
-		expect(created.body.data).toMatchObject(newUser);
+		expect(created.body.newUser).toMatchObject(newUser);
 
 		const repeated = await request(app)
 			.post(`${url}`)
@@ -58,7 +58,9 @@ describe('user REST', () => {
 			.send(editedUser);
 
 		expect(edited.statusCode).toBe(200);
-		expect(edited.body.data).toMatchObject(editedUser);
+		expect(edited.body.userUpdated).toMatchObject(
+			editedUser
+		);
 
 		const repeated = await request(app)
 			.put(`${url}${userId}`)

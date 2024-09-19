@@ -8,12 +8,11 @@ const getAllOrders = async (req, res) => {
 			.populate('client');
 
 		return res.status(200).json({
-			data: orders,
+			orders,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener las órdenes',
-			data: undefined,
 			error,
 		});
 	}
@@ -45,7 +44,6 @@ const getOrdersByPage = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener las órdenes',
-			data: undefined,
 			error,
 		});
 	}
@@ -94,7 +92,7 @@ const getFilteredOrders = async (req, res) => {
 			.populate('client'); // Poblar cliente si necesitas mostrar la información en la respuesta
 
 		return res.status(200).json({
-			data: orders,
+			orders,
 			lastOrderNumber: orders.length
 				? orders[orders.length - 1].orderNumber
 				: null, // Último número de orden para continuar paginación
@@ -119,20 +117,18 @@ const getOrderByOrderNumber = async (req, res) => {
 		if (!order) {
 			return res.status(404).json({
 				message: `No se encontró la orden con el número ${orderNumber}`,
-				data: undefined,
 			});
 		}
 
 		// Si se encuentra, retornamos la orden
 		return res.status(200).json({
 			message: 'Orden encontrada!',
-			data: order,
+			order,
 		});
 	} catch (error) {
 		// En caso de error en la búsqueda
 		return res.status(500).json({
 			message: 'Error al obtener la orden',
-			data: undefined,
 			error,
 		});
 	}
@@ -150,17 +146,15 @@ const getOrderById = async (req, res) => {
 		if (!order) {
 			return res.status(404).json({
 				message: 'La orden que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
 		return res.status(200).json({
-			data: order,
+			order,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener la información',
-			data: undefined,
 			error,
 		});
 	}
@@ -175,20 +169,18 @@ const createOrder = async (req, res) => {
 		});
 		if (alreadyExists) {
 			return res.status(400).json({
-				message: 'Ese número de orden ya está ocupado',
-				data: req.body.orderNumber,
+				message: `El número de orden ${req.body.orderNumber} ya está ocupado`,
 			});
 		}
 
-		const orderCreated = await Order.create(req.body);
+		const newOrder = await Order.create(req.body);
 		return res.status(200).json({
 			message: 'Orden creada correctamente!',
-			data: orderCreated,
+			newOrder,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al crear orden',
-			data: undefined,
 			error,
 		});
 	}
@@ -202,11 +194,10 @@ const updateOrder = async (req, res) => {
 		if (!orderToUpdate) {
 			return res.status(404).json({
 				message: 'La orden que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
-		const orderUpdated = await Order.findByIdAndUpdate(
+		const updatedOrder = await Order.findByIdAndUpdate(
 			id,
 			req.body,
 			{
@@ -215,12 +206,11 @@ const updateOrder = async (req, res) => {
 		);
 		return res.status(200).json({
 			message: 'Orden actualizada!',
-			data: orderUpdated,
+			updatedOrder,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al actualizar información',
-			data: undefined,
 			error,
 		});
 	}
@@ -234,18 +224,15 @@ const deleteOrder = async (req, res) => {
 		if (!orderToDelete) {
 			return res.status(404).json({
 				message: 'La orden que estás buscando no existe',
-				data: undefined,
 			});
 		}
 
 		return res.status(200).json({
 			message: 'Orden eliminada!',
-			data: undefined,
 		});
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al eliminar orden',
-			data: undefined,
 			error,
 		});
 	}

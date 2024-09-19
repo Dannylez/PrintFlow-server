@@ -37,7 +37,7 @@ describe('order REST', () => {
 	it('Debe traer lista de todas las ordenes', async () => {
 		const response = await request(app).get(`${url}`);
 		expect(response.statusCode).toBe(200);
-		expect(response.body.data).toHaveLength(2);
+		expect(response.body.orders).toHaveLength(2);
 	});
 	it('Debe contar el indice de las ordenes', async () => {
 		const response = await request(app).get(`${url}page`);
@@ -50,13 +50,13 @@ describe('order REST', () => {
 			.get(`${url}filtered`)
 			.query({ client: 'Koro' });
 		expect(filtered1.statusCode).toBe(200);
-		expect(filtered1.body.data).toHaveLength(1);
+		expect(filtered1.body.orders).toHaveLength(1);
 
 		const filtered2 = await request(app)
 			.get(`${url}filtered`)
 			.query({ client: 'kor' });
 		expect(filtered2.statusCode).toBe(200);
-		expect(filtered2.body.data).toHaveLength(1);
+		expect(filtered2.body.orders).toHaveLength(1);
 
 		const filteredWrong = await request(app)
 			.get(`${url}filtered`)
@@ -68,7 +68,7 @@ describe('order REST', () => {
 			.get(`${url}filtered`)
 			.query({ status: 'En proceso' });
 		expect(filteredByStatus.statusCode).toBe(200);
-		expect(filteredByStatus.body.data).toHaveLength(1);
+		expect(filteredByStatus.body.orders).toHaveLength(1);
 	});
 	it('Debe buscar por numero de orden', async () => {
 		const response = await request(app).get(
@@ -76,7 +76,7 @@ describe('order REST', () => {
 		);
 
 		expect(response.statusCode).toBe(200);
-		expect(response.body.data.orderNumber).toBe(1);
+		expect(response.body.order.orderNumber).toBe(1);
 
 		const wrongNumber = await request(app).get(
 			`${url}number/546`
@@ -96,7 +96,7 @@ describe('order REST', () => {
 			.send(newOrder);
 
 		expect(response1.statusCode).toBe(200);
-		expect(response1.body.data).toMatchObject(newOrder);
+		expect(response1.body.newOrder).toMatchObject(newOrder);
 
 		const response2 = await request(app)
 			.post(`${url}`)

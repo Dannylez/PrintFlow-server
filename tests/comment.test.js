@@ -16,7 +16,7 @@ describe('comment REST', () => {
 	it('Debe traer lista de comentarios', async () => {
 		const response = await request(app).get(`${url}`);
 		expect(response.statusCode).toBe(200);
-		expect(response.body.data).toHaveLength(2);
+		expect(response.body.comments).toHaveLength(2);
 	});
 	it('Debe traer un comentario por su id', async () => {
 		const response = await request(app).get(
@@ -30,7 +30,9 @@ describe('comment REST', () => {
 			.send(newComment);
 
 		expect(response.statusCode).toBe(200);
-		expect(response.body.data).toMatchObject(newComment);
+		expect(response.body.newComment).toMatchObject(
+			newComment
+		);
 	});
 	it('Debe eliminar un cliente', async () => {
 		const response1 = await request(app).delete(

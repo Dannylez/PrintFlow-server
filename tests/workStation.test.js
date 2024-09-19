@@ -21,7 +21,7 @@ describe('workStation REST', () => {
 	it('Debe traer lista de estaciones', async () => {
 		const response = await request(app).get(`${url}`);
 		expect(response.statusCode).toBe(200);
-		expect(response.body.data).toHaveLength(2);
+		expect(response.body.stations).toHaveLength(2);
 	});
 	it('Debe traer una estacion por su id', async () => {
 		const response = await request(app).get(
@@ -35,7 +35,9 @@ describe('workStation REST', () => {
 			.send(newStation);
 
 		expect(created.statusCode).toBe(200);
-		expect(created.body.data).toMatchObject(newStation);
+		expect(created.body.stationCreated).toMatchObject(
+			newStation
+		);
 
 		const repeated = await request(app)
 			.post(`${url}`)
@@ -55,7 +57,9 @@ describe('workStation REST', () => {
 			.send(editedStation);
 
 		expect(edited.statusCode).toBe(200);
-		expect(edited.body.data).toMatchObject(editedStation);
+		expect(edited.body.updatedStation).toMatchObject(
+			editedStation
+		);
 
 		const repeated = await request(app)
 			.put(`${url}${stationId}`)
