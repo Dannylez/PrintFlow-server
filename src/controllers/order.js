@@ -39,7 +39,7 @@ const getOrdersByPage = async (req, res) => {
 			from: orders.length
 				? orders[orders.length - 1].orderNumber
 				: null, // Devuelve el _id de la última orden de la lista
-			data: orders.length,
+			orders,
 		});
 	} catch (error) {
 		return res.status(500).json({
