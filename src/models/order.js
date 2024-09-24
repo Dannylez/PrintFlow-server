@@ -71,7 +71,6 @@ const orderSchema = new Schema({
 	tasks: {
 		type: [mongoose.Schema.Types.ObjectId],
 		ref: 'Task',
-		required: true,
 	},
 	budgetEstimate: {
 		type: Number,

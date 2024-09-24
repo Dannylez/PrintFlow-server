@@ -2,7 +2,7 @@ export default {
 	testEnvironment: 'node',
 	testPathIgnorePatterns: ['/node_modules/', '/dist/'],
 	coverageDirectory: 'coverage',
-	collectCoverage: true,
+	collectCoverage: false,
 	setupFilesAfterEnv: ['./tests/setup/jest.setup.js'],
 	transform: {
 		'^.+\\.js$': 'babel-jest',

@@ -28,6 +28,8 @@ const getOrdersByPage = async (req, res) => {
 			? { orderNumber: { $lt: from } }
 			: {};
 
+		const count = await Order.countDocuments();
+
 		// Obtener las órdenes más recientes primero, con un límite de 50
 		const orders = await Order.find(query)
 			.sort({ orderNumber: -1 }) // Ordenar por _id de forma descendente (últimas órdenes primero)
@@ -40,6 +42,7 @@ const getOrdersByPage = async (req, res) => {
 				? orders[orders.length - 1].orderNumber
 				: null, // Devuelve el _id de la última orden de la lista
 			orders,
+			count,
 		});
 	} catch (error) {
 		return res.status(500).json({
@@ -51,8 +54,7 @@ const getOrdersByPage = async (req, res) => {
 
 const getFilteredOrders = async (req, res) => {
 	const {
-		client,
-		product,
+		searchTerm,
 		status,
 		lastOrderNumber = null,
 	} = req.query;
@@ -61,41 +63,42 @@ const getFilteredOrders = async (req, res) => {
 	let query = {};
 
 	try {
-		// Filtrar por cliente solo si se proporciona un nombre
-		if (client) {
+		if (searchTerm) {
 			const clientIds =
-				await clientController.getClientIdsByName(client);
+				await clientController.getClientIdsByName(
+					searchTerm
+				);
 
-			if (clientIds.length === 0) {
-				return res.status(200).json({ data: [] });
-			}
-			query.client = { $in: clientIds }; // Buscar órdenes que tengan estos IDs de cliente
+			query = {
+				$or: [
+					{
+						product: { $regex: searchTerm, $options: 'i' },
+					},
+					{ client: { $in: clientIds } },
+				],
+			};
 		}
 
-		// Filtrar por producto y estado si se proporcionan
-		if (product) {
-			query['product'] = { $regex: product, $options: 'i' };
-		}
 		if (status) {
 			query.status = status;
 		}
 
-		// Si se proporciona lastOrderNumber, obtener órdenes anteriores
 		if (lastOrderNumber) {
 			query.orderNumber = { $lt: lastOrderNumber };
 		}
+		const count = await Order.countDocuments(query);
 
-		// Ejecutar la consulta con los filtros, ordenando y aplicando paginación
 		const orders = await Order.find(query)
 			.sort({ orderNumber: -1 })
 			.limit(limit)
-			.populate('client'); // Poblar cliente si necesitas mostrar la información en la respuesta
+			.populate('client');
 
 		return res.status(200).json({
 			orders,
 			lastOrderNumber: orders.length
 				? orders[orders.length - 1].orderNumber
-				: null, // Último número de orden para continuar paginación
+				: null,
+			count,
 		});
 	} catch (error) {
 		return res.status(500).json({

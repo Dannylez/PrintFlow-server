@@ -48,21 +48,21 @@ describe('order REST', () => {
 	it('Debe filtrar las ordenes', async () => {
 		const filtered1 = await request(app)
 			.get(`${url}filtered`)
-			.query({ client: 'Koro' });
+			.query({ searchTerm: 'Koro' });
 		expect(filtered1.statusCode).toBe(200);
 		expect(filtered1.body.orders).toHaveLength(1);
 
 		const filtered2 = await request(app)
 			.get(`${url}filtered`)
-			.query({ client: 'kor' });
+			.query({ searchTerm: 'kor' });
 		expect(filtered2.statusCode).toBe(200);
 		expect(filtered2.body.orders).toHaveLength(1);
 
 		const filteredWrong = await request(app)
 			.get(`${url}filtered`)
-			.query({ client: 'korra' });
+			.query({ searchTerm: 'korra' });
 		expect(filteredWrong.statusCode).toBe(200);
-		expect(filteredWrong.body.data).toHaveLength(0);
+		expect(filteredWrong.body.orders).toHaveLength(0);
 
 		const filteredByStatus = await request(app)
 			.get(`${url}filtered`)
