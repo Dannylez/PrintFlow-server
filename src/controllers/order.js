@@ -56,13 +56,18 @@ const getFilteredOrders = async (req, res) => {
 	const {
 		searchTerm,
 		status,
-		lastOrderNumber = null,
+		page = 1,
+		limit = 50,
 	} = req.query;
-	const limit = 50;
 
 	let query = {};
+	let count;
 
 	try {
+		if (!searchTerm) {
+			count = await Order.countDocuments();
+		}
+
 		if (searchTerm) {
 			const clientIds =
 				await clientController.getClientIdsByName(
@@ -77,19 +82,20 @@ const getFilteredOrders = async (req, res) => {
 					{ client: { $in: clientIds } },
 				],
 			};
+			count = await Order.countDocuments(query);
 		}
 
 		if (status) {
 			query.status = status;
 		}
 
-		if (lastOrderNumber) {
+		/* 		if (lastOrderNumber) {
 			query.orderNumber = { $lt: lastOrderNumber };
-		}
-		const count = await Order.countDocuments(query);
+		} */
 
 		const orders = await Order.find(query)
 			.sort({ orderNumber: -1 })
+			.skip((page - 1) * limit)
 			.limit(limit)
 			.populate('client');
 
