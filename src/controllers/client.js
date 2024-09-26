@@ -143,6 +143,20 @@ const deleteClient = async (req, res) => {
 	}
 };
 
+const deleteAll = async (req, res) => {
+	try {
+		const result = await Client.deleteMany({});
+		return res.status(200).json({
+			message: `Se borraron ${result.deletedCount} clientes`,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al eliminar clientes',
+			error,
+		});
+	}
+};
+
 export default {
 	getAllClients,
 	getClientById,
@@ -150,4 +164,5 @@ export default {
 	createClient,
 	updateClient,
 	deleteClient,
+	deleteAll,
 };

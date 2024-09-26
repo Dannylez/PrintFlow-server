@@ -64,10 +64,6 @@ const getFilteredOrders = async (req, res) => {
 	let count;
 
 	try {
-		if (!searchTerm) {
-			count = await Order.countDocuments();
-		}
-
 		if (searchTerm) {
 			const clientIds =
 				await clientController.getClientIdsByName(
@@ -82,17 +78,18 @@ const getFilteredOrders = async (req, res) => {
 					{ client: { $in: clientIds } },
 				],
 			};
-			count = await Order.countDocuments(query);
 		}
 
-		if (status) {
+		if (
+			status === 'En proceso' ||
+			status === 'En espera' ||
+			status === 'Completado' ||
+			status === 'Cancelado'
+		) {
 			query.status = status;
 		}
 
-		/* 		if (lastOrderNumber) {
-			query.orderNumber = { $lt: lastOrderNumber };
-		} */
-
+		count = await Order.countDocuments(query);
 		const orders = await Order.find(query)
 			.sort({ orderNumber: -1 })
 			.skip((page - 1) * limit)
@@ -247,6 +244,20 @@ const deleteOrder = async (req, res) => {
 	}
 };
 
+const deleteAll = async (req, res) => {
+	try {
+		const result = await Order.deleteMany({});
+		return res.status(200).json({
+			message: `Se borraron ${result.deletedCount} ordenes`,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al eliminar ordenes',
+			error,
+		});
+	}
+};
+
 export default {
 	getAllOrders,
 	getOrdersByPage,
@@ -256,4 +267,5 @@ export default {
 	createOrder,
 	updateOrder,
 	deleteOrder,
+	deleteAll,
 };

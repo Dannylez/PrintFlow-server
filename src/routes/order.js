@@ -14,6 +14,7 @@ router
 	.get('/:id', orderController.getOrderById)
 	.post('/', orderController.createOrder)
 	.put('/:id', orderController.updateOrder)
+	.delete('/all', orderController.deleteAll)
 	.delete('/:id', orderController.deleteOrder);
 
 export default router;
