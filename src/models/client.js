@@ -7,6 +7,12 @@ const clientSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	legalName: {
+		type: String,
+	},
+	RUT: {
+		type: String,
+	},
 	contact: {
 		type: [
 			{
