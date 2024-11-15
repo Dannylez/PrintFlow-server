@@ -17,6 +17,86 @@ const getAllClients = async (req, res) => {
 	}
 };
 
+const getClientsByPage = async (req, res) => {
+	const { from = null } = req.query;
+	const limit = 50;
+
+	try {
+		const query = from
+			? { clientNumber: { $lt: from } }
+			: {};
+
+		const count = await Client.countDocuments();
+
+		const clients = await Client.find(query)
+			.sort({ clientNumber: -1 })
+			.limit(limit);
+		/* .populate('product') */
+		/* .populate('client') */
+
+		return res.status(200).json({
+			from: clients.length
+				? clients[clients.length - 1].clientNumber
+				: null,
+			clients,
+			count,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al obtener clientes',
+			error,
+		});
+	}
+};
+
+const getFilteredClients = async (req, res) => {
+	const { searchTerm, page = 1, limit = 50 } = req.query;
+
+	let query = {};
+	let count;
+
+	try {
+		if (searchTerm) {
+			query = {
+				$or: [
+					{
+						companyName: {
+							$regex: searchTerm,
+							$options: 'i',
+						},
+					},
+					{
+						legalName: {
+							$regex: searchTerm,
+							$options: 'i',
+						},
+					},
+				],
+			};
+		}
+
+		count = await Client.countDocuments(query);
+		const clients = await Client.find(query)
+			/* .sort({ clientNumber: -1 }) */
+			.skip((page - 1) * limit)
+			.limit(limit);
+		/* .populate('client'); */
+
+		return res.status(200).json({
+			clients,
+			lastclientNumber: clients.length
+				? clients[clients.length - 1].clientNumber
+				: null,
+			count,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al obtener clientes',
+			error,
+		});
+	}
+};
+
 const getClientById = async (req, res) => {
 	const { id } = req.params;
 
@@ -159,6 +239,7 @@ const deleteAll = async (req, res) => {
 
 export default {
 	getAllClients,
+	getFilteredClients,
 	getClientById,
 	getClientIdsByName,
 	createClient,

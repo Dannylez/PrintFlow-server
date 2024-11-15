@@ -29,6 +29,15 @@ const clientSchema = new Schema({
 			},
 		],
 	},
+	address: {
+		type: String,
+	},
+	phone: {
+		type: String,
+	},
+	extraInfo: {
+		type: String,
+	},
 	deliveryData: {
 		type: [String],
 	},

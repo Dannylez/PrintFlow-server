@@ -5,6 +5,7 @@ const router = express.Router();
 
 router
 	.get('/', clientController.getAllClients)
+	.get('/filtered', clientController.getFilteredClients)
 	.get('/:id', clientController.getClientById)
 	.post('/', clientController.createClient)
 	.put('/:id', clientController.updateClient)
