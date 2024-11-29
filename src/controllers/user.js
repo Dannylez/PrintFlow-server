@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import User from '../models/user.js';
+import jwt from 'jsonwebtoken';
 
 const getAllUsers = async (req, res) => {
 	try {
@@ -73,6 +74,49 @@ const createUser = async (req, res) => {
 	}
 };
 
+const login = async (req, res) => {
+	const jwtSecret = process.env.JWT_SECRET;
+	const { username, pw } = req.body;
+
+	if (!username || !pw) {
+		return res.status(400).json({
+			error:
+				'Se deben proporcionar tanto el nombre de usuario como la contraseña',
+		});
+	}
+
+	try {
+		const user = await User.findOne({ username });
+		if (!user) {
+			return res.status(400).json({
+				error: 'Usuario no encontrado',
+			});
+		}
+		if (user.pw === pw) {
+			const token = jwt.sign(
+				{
+					userId: user._id,
+					username,
+				},
+				jwtSecret,
+				{ expiresIn: '30d' }
+			);
+			return res.status(200).json({
+				message: 'Sesión iniciada',
+				token,
+			});
+		}
+
+		return res.status(400).json({
+			error: 'Contraseña incorrecta',
+		});
+	} catch (error) {
+		return res.status(500).json({
+			error: 'Error del servidor, intente de nuevo',
+		});
+	}
+};
+
 const updateUser = async (req, res) => {
 	const { id } = req.params;
 	const { username } = req.body;
@@ -142,4 +186,5 @@ export default {
 	createUser,
 	updateUser,
 	deleteUser,
+	login,
 };

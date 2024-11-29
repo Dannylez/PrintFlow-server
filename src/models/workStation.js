@@ -7,6 +7,9 @@ const workStationSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	type: {
+		type: String,
+	},
 	tasks: {
 		type: [mongoose.Schema.Types.ObjectId],
 		ref: 'Task',
