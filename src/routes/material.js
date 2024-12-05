@@ -7,6 +7,7 @@ router
 	.get('/', materialController.getAllMaterials)
 	.get('/:id', materialController.getMaterialById)
 	.post('/', materialController.createMaterial)
+	.put('/:id', materialController.updateMaterial)
 	.delete('/all', materialController.deleteAll)
 	.delete('/:id', materialController.deleteMaterial);
 

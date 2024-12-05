@@ -97,6 +97,7 @@ const login = async (req, res) => {
 				{
 					userId: user._id,
 					username,
+					role: user.role,
 				},
 				jwtSecret,
 				{ expiresIn: '30d' }

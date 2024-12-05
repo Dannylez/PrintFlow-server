@@ -53,6 +53,33 @@ const createMaterial = async (req, res) => {
 	}
 };
 
+const updateMaterial = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const materialToUpdate = await Material.findById(id);
+		if (!materialToUpdate) {
+			return res.status(404).json({
+				message: 'El material que estás buscando no existe',
+			});
+		}
+
+		const updatedMaterial =
+			await Material.findByIdAndUpdate(id, req.body, {
+				new: true,
+			});
+		return res.status(200).json({
+			message: 'MAterial actualizado!',
+			updatedMaterial,
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			message: 'Error al actualizar material',
+			error,
+		});
+	}
+};
+
 const deleteMaterial = async (req, res) => {
 	const { id } = req.params;
 
@@ -94,6 +121,7 @@ export default {
 	getAllMaterials,
 	getMaterialById,
 	createMaterial,
+	updateMaterial,
 	deleteMaterial,
 	deleteAll,
 };
