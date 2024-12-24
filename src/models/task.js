@@ -12,7 +12,13 @@ const taskSchema = new Schema({
 		required: true,
 	},
 	processes: {
-		type: String,
+		type: [
+			{
+				operation: { type: mongoose.Schema.Types.ObjectId },
+				description: { type: String },
+				cost: { type: String },
+			},
+		],
 		required: true,
 	},
 	order: {

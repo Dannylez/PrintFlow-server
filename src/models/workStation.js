@@ -7,17 +7,19 @@ const workStationSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	type: {
-		type: String,
-	},
 	tasks: {
 		type: [mongoose.Schema.Types.ObjectId],
 		ref: 'Task',
+	},
+	operations: {
+		type: [mongoose.Schema.Types.ObjectId],
+		ref: 'Operation',
 	},
 	responsible: {
 		type: [mongoose.Schema.Types.ObjectId],
 		ref: 'User',
 	},
+	order: { type: Number, required: true },
 });
 
 export default mongoose.model(

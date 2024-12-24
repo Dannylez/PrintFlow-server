@@ -4,6 +4,7 @@ import WorkStation from '../models/workStation.js';
 const getAllWorkStations = async (req, res) => {
 	try {
 		const stations = await WorkStation.find()
+			.sort({ order: 1 })
 			.populate('tasks')
 			.populate('responsible');
 
@@ -56,10 +57,12 @@ const createWorkStation = async (req, res) => {
 				message: `Ya existe una estación con el nombre ${req.body.name}`,
 			});
 		}
+		const count = await WorkStation.countDocuments();
 
-		const stationCreated = await WorkStation.create(
-			req.body
-		);
+		const stationCreated = await WorkStation.create({
+			...req.body,
+			order: count + 1,
+		});
 		return res.status(200).json({
 			message: 'Estación de trabajo creada correctamente!',
 			stationCreated,
