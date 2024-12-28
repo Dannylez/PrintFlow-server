@@ -7,11 +7,12 @@ const operationSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	unitType: {
+		type: String,
+		enum: ['Horas', 'Clicks', 'Metro cuadrado', 'Tiraje'],
+	},
+	unitCost: { type: Number },
 	plateCost: { type: Number },
-	costPerHour: { type: Number },
-	costPerClick: { type: Number },
-	costPerSquareMeter: { type: Number },
-	costPerPrint: { type: Number },
 	pricingRules: [
 		{
 			range: { type: Number },
