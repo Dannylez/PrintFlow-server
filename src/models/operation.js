@@ -9,7 +9,13 @@ const operationSchema = new Schema({
 	},
 	unitType: {
 		type: String,
-		enum: ['Horas', 'Clicks', 'Metro cuadrado', 'Tiraje'],
+		enum: [
+			'Horas',
+			'Clicks',
+			'Metro cuadrado',
+			'Tiraje',
+			'Unitario',
+		],
 	},
 	unitCost: { type: Number },
 	plateCost: { type: Number },
@@ -28,7 +34,8 @@ const operationSchema = new Schema({
 		ref: 'WorkStation',
 		required: true,
 	},
-	allTask: { type: Boolean },
+	isAllTask: { type: Boolean, required: true },
+	isPrintable: { type: Boolean, required: true },
 });
 
 export default mongoose.model('Operation', operationSchema);

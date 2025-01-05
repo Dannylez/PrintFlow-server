@@ -3,10 +3,6 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const orderSchema = new Schema({
-	name: {
-		type: String,
-		required: true,
-	},
 	orderNumber: {
 		type: Number,
 		required: true,
@@ -65,10 +61,6 @@ const orderSchema = new Schema({
 			],
 		},
 	},
-	dateReceived: {
-		type: String,
-		required: true,
-	},
 	dateCreated: {
 		type: String,
 		required: true,
@@ -92,10 +84,7 @@ const orderSchema = new Schema({
 	descriptionPrivate: {
 		type: String,
 	},
-	tasks: {
-		type: [mongoose.Schema.Types.ObjectId],
-		ref: 'Task',
-	},
+	tasks: [{ type: Object }],
 	budgetEstimate: {
 		type: Number,
 		required: true,

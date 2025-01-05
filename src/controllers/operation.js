@@ -141,10 +141,25 @@ const deleteOperation = async (req, res) => {
 	}
 };
 
+const deleteAll = async (req, res) => {
+	try {
+		await Operation.deleteMany({});
+		return res.status(200).json({
+			message: `Se borraron todas las operaciones`,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al eliminar operaciones',
+			error,
+		});
+	}
+};
+
 export default {
 	getAllOperations,
 	getOperationById,
 	createOperation,
 	updateOperation,
 	deleteOperation,
+	deleteAll,
 };

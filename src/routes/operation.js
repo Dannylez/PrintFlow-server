@@ -8,6 +8,7 @@ router
 	.get('/:id', operationController.getOperationById)
 	.post('/', operationController.createOperation)
 	.put('/:id', operationController.updateOperation)
+	.delete('/all', operationController.deleteAll)
 	.delete('/:id', operationController.deleteOperation);
 
 export default router;
