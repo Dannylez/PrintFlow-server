@@ -15,6 +15,9 @@ const workStationSchema = new Schema({
 		type: [mongoose.Schema.Types.ObjectId],
 		ref: 'Operation',
 	},
+	isPrintable: {
+		type: Boolean,
+	},
 	responsible: {
 		type: [mongoose.Schema.Types.ObjectId],
 		ref: 'User',

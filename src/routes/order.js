@@ -5,6 +5,7 @@ const router = express.Router();
 
 router
 	.get('/', orderController.getAllOrders)
+	.get('/active', orderController.getActiveOrders)
 	.get('/page', orderController.getOrdersByPage)
 	.get('/filtered', orderController.getFilteredOrders)
 	.get(

@@ -52,6 +52,25 @@ const getOrdersByPage = async (req, res) => {
 	}
 };
 
+const getActiveOrders = async (req, res) => {
+	const query = { status: 'En proceso' };
+
+	try {
+		const orders = await Order.find(query).populate(
+			'client'
+		);
+
+		return res.status(200).json({
+			orders,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al obtener las órdenes',
+			error,
+		});
+	}
+};
+
 const getFilteredOrders = async (req, res) => {
 	const {
 		searchTerm,
@@ -260,6 +279,7 @@ const deleteAll = async (req, res) => {
 
 export default {
 	getAllOrders,
+	getActiveOrders,
 	getOrdersByPage,
 	getOrderByOrderNumber,
 	getFilteredOrders,
