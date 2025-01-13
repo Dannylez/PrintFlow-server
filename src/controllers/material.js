@@ -15,6 +15,49 @@ const getAllMaterials = async (req, res) => {
 	}
 };
 
+const getFilteredMaterials = async (req, res) => {
+	const {
+		page = 1,
+		searchTerm = '',
+		limit = 15,
+	} = req.query;
+
+	let query = {};
+	let count;
+
+	try {
+		if (searchTerm) {
+			query = {
+				$or: [
+					{
+						name: { $regex: searchTerm, $options: 'i' },
+					},
+					{
+						type: { $regex: searchTerm, $options: 'i' },
+					},
+				],
+			};
+		}
+
+		count = await Material.countDocuments(query);
+
+		const materials = await Material.find(query)
+			.sort({ materialNumber: -1 })
+			.skip((page - 1) * limit)
+			.limit(limit);
+
+		return res.status(200).json({
+			materials,
+			count,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al obtener las órdenes',
+			error,
+		});
+	}
+};
+
 const getMaterialById = async (req, res) => {
 	const { id } = req.params;
 
@@ -68,7 +111,7 @@ const updateMaterial = async (req, res) => {
 				new: true,
 			});
 		return res.status(200).json({
-			message: 'MAterial actualizado!',
+			message: 'Material actualizado!',
 			updatedMaterial,
 		});
 	} catch (error) {
@@ -119,6 +162,7 @@ const deleteAll = async (req, res) => {
 
 export default {
 	getAllMaterials,
+	getFilteredMaterials,
 	getMaterialById,
 	createMaterial,
 	updateMaterial,

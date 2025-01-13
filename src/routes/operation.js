@@ -5,6 +5,10 @@ const router = express.Router();
 
 router
 	.get('/', operationController.getAllOperations)
+	.get(
+		'/filtered',
+		operationController.getFilteredOperations
+	)
 	.get('/:id', operationController.getOperationById)
 	.post('/', operationController.createOperation)
 	.put('/:id', operationController.updateOperation)

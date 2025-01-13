@@ -19,6 +19,94 @@ const getAllOperations = async (req, res) => {
 	}
 };
 
+const getFilteredOperations = async (req, res) => {
+	const {
+		page = 1,
+		searchTerm = '',
+		limit = 15,
+	} = req.query;
+
+	const skip = (page - 1) * limit;
+	const matchStage = {};
+
+	try {
+		if (searchTerm) {
+			matchStage.$or = [
+				{ name: { $regex: searchTerm, $options: 'i' } },
+				{ unitType: { $regex: searchTerm, $options: 'i' } },
+				{
+					'workStationDetails.name': {
+						$regex: searchTerm,
+						$options: 'i',
+					},
+				}, // Search in populated workStations
+			];
+		}
+
+		const operationsPipeline = [
+			{
+				$lookup: {
+					from: 'workstations',
+					localField: 'workStation',
+					foreignField: '_id',
+					as: 'workStationDetails',
+				},
+			},
+			{
+				$unwind: {
+					path: '$workStationDetails',
+					preserveNullAndEmptyArrays: true,
+				},
+			},
+			{
+				$match: matchStage, // Apply filtering here
+			},
+			{
+				$addFields: {
+					workStation: '$workStationDetails',
+				},
+			},
+			{
+				$project: {
+					workStationDetails: 0, // Clean up temporary field
+				},
+			},
+			{
+				$sort: { operationNumber: -1 },
+			},
+			{
+				$facet: {
+					metadata: [{ $count: 'total' }],
+					data: [
+						{ $skip: skip },
+						{ $limit: parseInt(limit, 10) },
+					],
+				},
+			},
+		];
+
+		const [result] = await Operation.aggregate(
+			operationsPipeline
+		);
+
+		const operations = result.data || [];
+		const count =
+			result.metadata.length > 0
+				? result.metadata[0].total
+				: 0;
+
+		return res.status(200).json({
+			operations,
+			count,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al obtener las operaciones',
+			error,
+		});
+	}
+};
+
 const getOperationById = async (req, res) => {
 	const { id } = req.params;
 
@@ -85,14 +173,13 @@ const updateOperation = async (req, res) => {
 					'La operación que estás buscando no existe',
 			});
 		}
-
 		const alreadyExists = await Operation.findOne({
 			name,
 		});
 		if (
 			alreadyExists &&
 			!alreadyExists._id.equals(
-				mongoose.Types.ObjectId.isValid(id)
+				new mongoose.Types.ObjectId(id)
 			)
 		) {
 			return res.status(400).json({
@@ -157,6 +244,7 @@ const deleteAll = async (req, res) => {
 
 export default {
 	getAllOperations,
+	getFilteredOperations,
 	getOperationById,
 	createOperation,
 	updateOperation,

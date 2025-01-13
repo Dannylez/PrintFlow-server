@@ -16,13 +16,11 @@ const materialSchema = new Schema({
 	grammage: {
 		type: [String],
 	},
-	pricePerTon: {
+	unitType: {
 		type: String,
+		enum: ['Tonelada', 'Unidad', 'Metro cuadrado'],
 	},
-	pricePerUnit: {
-		type: String,
-	},
-	pricePerSquareMeter: {
+	pricePerUnitType: {
 		type: String,
 	},
 });

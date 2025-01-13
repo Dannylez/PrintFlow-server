@@ -5,6 +5,7 @@ const router = express.Router();
 
 router
 	.get('/', materialController.getAllMaterials)
+	.get('/filtered', materialController.getFilteredMaterials)
 	.get('/:id', materialController.getMaterialById)
 	.post('/', materialController.createMaterial)
 	.put('/:id', materialController.updateMaterial)
