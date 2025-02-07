@@ -45,10 +45,10 @@ const orderSchema = new Schema({
 			'Completado',
 		],
 	},
-	request: {
+	/* 	request: {
 		type: String,
 		required: true,
-	},
+	}, */
 	scheme: {
 		link: { type: String },
 		files: {
@@ -71,20 +71,26 @@ const orderSchema = new Schema({
 	},
 	dateFinal: {
 		type: String,
-		required: true,
 	},
 	descriptionClient: {
 		type: String,
-		required: true,
 	},
 	descriptionWork: {
 		type: String,
-		required: true,
 	},
 	descriptionPrivate: {
 		type: String,
 	},
 	tasks: [{ type: Object }],
+	stationsList: [
+		{
+			station: {
+				type: String,
+			},
+			completed: { type: Boolean, default: false },
+			number: { type: Number },
+		},
+	],
 	budgetEstimate: {
 		type: Number,
 		required: true,
@@ -99,6 +105,9 @@ const orderSchema = new Schema({
 	},
 	deviation: {
 		type: String,
+	},
+	fields: {
+		type: Object,
 	},
 });
 

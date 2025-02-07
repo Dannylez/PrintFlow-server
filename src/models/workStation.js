@@ -9,7 +9,7 @@ const workStationSchema = new Schema({
 	},
 	tasks: {
 		type: [mongoose.Schema.Types.ObjectId],
-		ref: 'Task',
+		ref: 'Order',
 	},
 	operations: {
 		type: [mongoose.Schema.Types.ObjectId],

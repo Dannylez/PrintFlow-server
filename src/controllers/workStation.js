@@ -5,7 +5,10 @@ const getAllWorkStations = async (req, res) => {
 	try {
 		const stations = await WorkStation.find()
 			.sort({ order: 1 })
-			.populate('tasks')
+			.populate({
+				path: 'tasks',
+				populate: [{ path: 'client' }],
+			})
 			.populate('responsible');
 
 		return res.status(200).json({
