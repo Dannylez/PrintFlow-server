@@ -85,7 +85,8 @@ const orderSchema = new Schema({
 	stationsList: [
 		{
 			station: {
-				type: String,
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Operation',
 			},
 			completed: { type: Boolean, default: false },
 			number: { type: Number },

@@ -5,7 +5,8 @@ const getAllOrders = async (req, res) => {
 	try {
 		const orders = await Order.find()
 			/* .populate('product') */
-			.populate('client');
+			.populate('client')
+			.populate('stationsList.station');
 
 		return res.status(200).json({
 			orders,
@@ -35,7 +36,8 @@ const getOrdersByPage = async (req, res) => {
 			.sort({ orderNumber: -1 }) // Ordenar por _id de forma descendente (últimas órdenes primero)
 			.limit(limit)
 			/* .populate('product') */
-			.populate('client');
+			.populate('client')
+			.populate('stationsList.station');
 
 		return res.status(200).json({
 			from: orders.length
@@ -56,9 +58,11 @@ const getActiveOrders = async (req, res) => {
 	const query = { status: 'En proceso' };
 
 	try {
-		const orders = await Order.find(query).populate(
-			'client'
-		);
+		const orders = await Order.find(query)
+			.populate('client')
+			.populate('stationsList.station');
+
+		console.log('orders', orders);
 
 		return res.status(200).json({
 			orders,
@@ -113,7 +117,8 @@ const getFilteredOrders = async (req, res) => {
 			.sort({ orderNumber: -1 })
 			.skip((page - 1) * limit)
 			.limit(limit)
-			.populate('client');
+			.populate('client')
+			.populate('stationsList.station');
 
 		return res.status(200).json({
 			orders,
@@ -166,7 +171,8 @@ const getOrderById = async (req, res) => {
 		const order = await Order.findById(id)
 			/* .populate('product') */
 			.populate('client')
-			.populate('comments');
+			.populate('comments')
+			.populate('stationsList.station');
 
 		if (!order) {
 			return res.status(404).json({
