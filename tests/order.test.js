@@ -12,7 +12,7 @@ const newOrder = {
 	client: '66e036a5245a998bb5d00c95',
 	contact: 'paosd',
 	deliveryData: 'fasdas',
-	status: 'En proceso',
+	status: 'Aceptada',
 	request: 'Porfavor haceme un libro',
 	dateReceived: '09/09/24',
 	dateCreated: '09/09/24',
@@ -66,7 +66,7 @@ describe('order REST', () => {
 
 		const filteredByStatus = await request(app)
 			.get(`${url}filtered`)
-			.query({ status: 'En proceso' });
+			.query({ status: 'Aceptada' });
 		expect(filteredByStatus.statusCode).toBe(200);
 		expect(filteredByStatus.body.orders).toHaveLength(1);
 	});

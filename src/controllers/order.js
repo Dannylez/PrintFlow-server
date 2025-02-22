@@ -55,7 +55,9 @@ const getOrdersByPage = async (req, res) => {
 };
 
 const getActiveOrders = async (req, res) => {
-	const query = { status: 'En proceso' };
+	const query = {
+		status: { $in: ['Aceptada', 'Detenida', 'Finalizada'] },
+	};
 
 	try {
 		const orders = await Order.find(query)
@@ -104,10 +106,11 @@ const getFilteredOrders = async (req, res) => {
 		}
 
 		if (
-			status === 'En proceso' ||
-			status === 'En espera' ||
-			status === 'Completado' ||
-			status === 'Cancelado'
+			status === 'Aceptada' ||
+			status === 'Abierta' ||
+			status === 'Finalizada' ||
+			status === 'Detenida' ||
+			status === 'Facturada'
 		) {
 			query.status = status;
 		}

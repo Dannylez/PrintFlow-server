@@ -39,10 +39,11 @@ const orderSchema = new Schema({
 	status: {
 		type: String,
 		enum: [
-			'Cancelado',
-			'En espera',
-			'En proceso',
-			'Completado',
+			'Abierta',
+			'Aceptada',
+			'Detenida',
+			'Finalizada',
+			'Facturada',
 		],
 	},
 	/* 	request: {
