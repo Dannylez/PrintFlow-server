@@ -21,7 +21,6 @@ const orderSchema = new Schema({
 			{
 				name: {
 					type: String,
-					required: true,
 				},
 				phone: {
 					type: String,
@@ -34,7 +33,6 @@ const orderSchema = new Schema({
 	},
 	deliveryData: {
 		type: String,
-		required: true,
 	},
 	status: {
 		type: String,
@@ -46,10 +44,6 @@ const orderSchema = new Schema({
 			'Facturada',
 		],
 	},
-	/* 	request: {
-		type: String,
-		required: true,
-	}, */
 	scheme: {
 		link: { type: String },
 		files: {
