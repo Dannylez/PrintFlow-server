@@ -7,6 +7,7 @@ import task from './task.js';
 import workStation from './workStation.js';
 import material from './material.js';
 import operation from './operation.js';
+import exchange from './exchange.js';
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use('/task', task);
 router.use('/workStation', workStation);
 router.use('/material', material);
 router.use('/operation', operation);
+router.use('/exchange', exchange);
 
 export default router;
