@@ -3,9 +3,9 @@ import Operation from '../models/operation.js';
 
 const getAllOperations = async (req, res) => {
 	try {
-		const operations = await Operation.find().populate(
-			'workStation'
-		);
+		const operations = await Operation.find()
+			.populate('workStation')
+			.sort({ name: 1 });
 
 		return res.status(200).json({
 			operations,
@@ -72,7 +72,7 @@ const getFilteredOperations = async (req, res) => {
 				},
 			},
 			{
-				$sort: { operationNumber: -1 },
+				$sort: { name: 1 },
 			},
 			{
 				$facet: {

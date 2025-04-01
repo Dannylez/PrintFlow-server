@@ -3,7 +3,9 @@ import Client from '../models/client.js';
 
 const getAllClients = async (req, res) => {
 	try {
-		const clients = await Client.find().populate('orders');
+		const clients = await Client.find()
+			.populate('orders')
+			.sort({ companyName: 1 });
 
 		return res.status(200).json({
 			clients,
@@ -79,7 +81,8 @@ const getFilteredClients = async (req, res) => {
 		const clients = await Client.find(query)
 			/* .sort({ clientNumber: -1 }) */
 			.skip((page - 1) * limit)
-			.limit(limit);
+			.limit(limit)
+			.sort({ companyName: 1 });
 		/* .populate('client'); */
 
 		return res.status(200).json({

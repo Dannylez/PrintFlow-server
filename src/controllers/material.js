@@ -2,7 +2,9 @@ import Material from '../models/material.js';
 
 const getAllMaterials = async (req, res) => {
 	try {
-		const materials = await Material.find();
+		const materials = await Material.find().sort({
+			name: 1,
+		});
 
 		return res.status(200).json({
 			materials,
@@ -44,7 +46,8 @@ const getFilteredMaterials = async (req, res) => {
 		const materials = await Material.find(query)
 			.sort({ materialNumber: -1 })
 			.skip((page - 1) * limit)
-			.limit(limit);
+			.limit(limit)
+			.sort({ name: 1 });
 
 		return res.status(200).json({
 			materials,
