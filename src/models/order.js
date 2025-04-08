@@ -57,15 +57,14 @@ const orderSchema = new Schema({
 		},
 	},
 	dateCreated: {
-		type: String,
+		type: Date,
 		required: true,
 	},
 	dateEstimate: {
-		type: String,
-		required: true,
+		type: Date,
 	},
 	dateFinal: {
-		type: String,
+		type: Date,
 	},
 	descriptionClient: {
 		type: String,

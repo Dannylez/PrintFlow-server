@@ -64,8 +64,6 @@ const getActiveOrders = async (req, res) => {
 			.populate('client')
 			.populate('stationsList.station');
 
-		console.log('orders', orders);
-
 		return res.status(200).json({
 			orders,
 		});
@@ -83,6 +81,7 @@ const getFilteredOrders = async (req, res) => {
 		status,
 		page = 1,
 		limit = 50,
+		dateOrder = false,
 	} = req.query;
 
 	let query = {};
@@ -116,12 +115,71 @@ const getFilteredOrders = async (req, res) => {
 		}
 
 		count = await Order.countDocuments(query);
-		const orders = await Order.find(query)
-			.sort({ orderNumber: -1 })
-			.skip((page - 1) * limit)
-			.limit(limit)
-			.populate('client')
-			.populate('stationsList.station');
+
+		let orders = {};
+
+		if (dateOrder) {
+			const dateOrders = await Order.aggregate([
+				{
+					$addFields: {
+						statusPriority: {
+							$switch: {
+								branches: [
+									{
+										case: { $eq: ['$status', 'Aceptada'] },
+										then: 1,
+									},
+									{
+										case: { $eq: ['$status', 'Abierta'] },
+										then: 2,
+									},
+									{
+										case: { $eq: ['$status', 'Detenida'] },
+										then: 3,
+									},
+									{
+										case: {
+											$eq: ['$status', 'Finalizada'],
+										},
+										then: 4,
+									},
+									{
+										case: { $eq: ['$status', 'Facturada'] },
+										then: 5,
+									},
+								],
+								default: 3,
+							},
+						},
+					},
+				},
+				{
+					$sort: {
+						statusPriority: 1, // Ordena primero por el campo statusPriority
+						dateFinal: 1, // Luego por la fecha límite (ascendente)
+						dateEstimate: 1, // Luego por la fecha estimada (ascendente)
+						orderNumber: -1,
+					},
+				},
+				{
+					$skip: (page - 1) * limit, // Paginación, omite los primeros registros según la página
+				},
+				{
+					$limit: limit, // Limita la cantidad de resultados según el límite
+				},
+			]);
+			orders = await Order.populate(dateOrders, [
+				{ path: 'client' },
+				{ path: 'stationsList.station' },
+			]);
+		} else {
+			orders = await Order.find(query)
+				.sort({ orderNumber: -1 })
+				.skip((page - 1) * limit)
+				.limit(limit)
+				.populate('client')
+				.populate('stationsList.station');
+		}
 
 		return res.status(200).json({
 			orders,
@@ -207,7 +265,18 @@ const createOrder = async (req, res) => {
 			});
 		}
 
-		const newOrder = await Order.create(req.body);
+		const newBody = {
+			...req.body,
+			dateCreated: new Date(req.body.dateCreated),
+			dateEstimate: req.body.dateEstimate
+				? new Date(req.body.dateEstimate)
+				: null,
+			dateFinal: req.body.dateFinal
+				? new Date(req.body.dateFinal)
+				: null,
+		};
+
+		const newOrder = await Order.create(newBody);
 		return res.status(200).json({
 			message: 'Orden creada correctamente!',
 			newOrder,
@@ -231,9 +300,19 @@ const updateOrder = async (req, res) => {
 			});
 		}
 
+		const newBody = {
+			...req.body,
+			dateEstimate: req.body.dateEstimate
+				? new Date(req.body.dateEstimate)
+				: null,
+			dateFinal: req.body.dateFinal
+				? new Date(req.body.dateFinal)
+				: null,
+		};
+
 		const updatedOrder = await Order.findByIdAndUpdate(
 			id,
-			req.body,
+			newBody,
 			{
 				new: true,
 			}
