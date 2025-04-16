@@ -8,8 +8,7 @@ const getAllWorkStations = async (req, res) => {
 			.populate({
 				path: 'tasks',
 				populate: [{ path: 'client' }],
-			})
-			.populate('responsible');
+			});
 
 		return res.status(200).json({
 			stations,
@@ -17,6 +16,47 @@ const getAllWorkStations = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({
 			message: 'Error al obtener las estaciones de trabajo',
+			error,
+		});
+	}
+};
+
+const getAllWithoutPopulate = async (req, res) => {
+	try {
+		const stations = await WorkStation.find().sort({
+			order: 1,
+		});
+
+		return res.status(200).json({
+			stations,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al obtener las estaciones de trabajo',
+			error,
+		});
+	}
+};
+
+const getByIdWithoutPopulate = async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const station = await WorkStation.findById(id);
+
+		if (!station) {
+			return res.status(404).json({
+				message:
+					'La estación de trabajo que estás buscando no existe',
+			});
+		}
+
+		return res.status(200).json({
+			station,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Error al obtener la información',
 			error,
 		});
 	}
@@ -166,6 +206,8 @@ const deleteWorkStation = async (req, res) => {
 
 export default {
 	getAllWorkStations,
+	getAllWithoutPopulate,
+	getByIdWithoutPopulate,
 	getWorkStationById,
 	createWorkStation,
 	updateWorkStation,

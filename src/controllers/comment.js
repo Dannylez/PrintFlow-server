@@ -2,10 +2,7 @@ import Comment from '../models/comment.js';
 
 const getAllComments = async (req, res) => {
 	try {
-		const comments = await Comment.find()
-			.populate('user')
-			.populate('task')
-			.populate('order');
+		const comments = await Comment.find().populate('order');
 
 		return res.status(200).json({
 			comments,
@@ -22,10 +19,9 @@ const getCommentById = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const comment = await Comment.findById(id)
-			.populate('user')
-			.populate('task')
-			.populate('order');
+		const comment = await Comment.findById(id).populate(
+			'order'
+		);
 
 		if (!comment) {
 			return res.status(404).json({

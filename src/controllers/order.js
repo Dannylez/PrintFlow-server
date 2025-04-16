@@ -319,6 +319,7 @@ const updateOrder = async (req, res) => {
 		);
 		return res.status(200).json({
 			message: 'Orden actualizada!',
+			orderToUpdate,
 			updatedOrder,
 		});
 	} catch (error) {
