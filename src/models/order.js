@@ -40,8 +40,9 @@ const orderSchema = new Schema({
 			'Abierta',
 			'Aceptada',
 			'Detenida',
+			'Para facturar',
+			'Para enviar',
 			'Finalizada',
-			'Facturada',
 		],
 	},
 	scheme: {
@@ -101,8 +102,13 @@ const orderSchema = new Schema({
 	deviation: {
 		type: String,
 	},
+	bill: {
+		date: { type: String },
+		number: { type: String },
+	},
 	fields: {
-		type: Object,
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'OrderFields',
 	},
 });
 

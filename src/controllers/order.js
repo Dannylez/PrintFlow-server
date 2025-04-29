@@ -56,7 +56,14 @@ const getOrdersByPage = async (req, res) => {
 
 const getActiveOrders = async (req, res) => {
 	const query = {
-		status: { $in: ['Aceptada', 'Detenida', 'Finalizada'] },
+		status: {
+			$in: [
+				'Aceptada',
+				'Detenida',
+				'Para facturar',
+				'Para enviar',
+			],
+		},
 	};
 
 	try {
@@ -109,7 +116,8 @@ const getFilteredOrders = async (req, res) => {
 			status === 'Abierta' ||
 			status === 'Finalizada' ||
 			status === 'Detenida' ||
-			status === 'Facturada'
+			status === 'Para facturar' ||
+			status === 'Para enviar'
 		) {
 			query.status = status;
 		}
@@ -137,15 +145,24 @@ const getFilteredOrders = async (req, res) => {
 										case: { $eq: ['$status', 'Detenida'] },
 										then: 3,
 									},
+
 									{
 										case: {
-											$eq: ['$status', 'Finalizada'],
+											$eq: ['$status', 'Para facturar'],
 										},
 										then: 4,
 									},
 									{
-										case: { $eq: ['$status', 'Facturada'] },
+										case: {
+											$eq: ['$status', 'Para enviar'],
+										},
 										then: 5,
+									},
+									{
+										case: {
+											$eq: ['$status', 'Finalizada'],
+										},
+										then: 6,
 									},
 								],
 								default: 3,
@@ -229,11 +246,9 @@ const getOrderById = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const order = await Order.findById(id)
-			/* .populate('product') */
-			.populate('client')
-			.populate('comments')
-			.populate('stationsList.station');
+		const order = await Order.findById(id).populate(
+			'fields'
+		);
 
 		if (!order) {
 			return res.status(404).json({
@@ -300,7 +315,7 @@ const updateOrder = async (req, res) => {
 			});
 		}
 
-		const newBody = {
+		/* 		const newBody = {
 			...req.body,
 			dateEstimate: req.body.dateEstimate
 				? new Date(req.body.dateEstimate)
@@ -308,11 +323,11 @@ const updateOrder = async (req, res) => {
 			dateFinal: req.body.dateFinal
 				? new Date(req.body.dateFinal)
 				: null,
-		};
+		}; */
 
 		const updatedOrder = await Order.findByIdAndUpdate(
 			id,
-			newBody,
+			req.body,
 			{
 				new: true,
 			}
