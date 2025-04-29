@@ -1,8 +1,9 @@
+import mongoose from 'mongoose';
 import Comment from '../models/comment.js';
 
 const getAllComments = async (req, res) => {
 	try {
-		const comments = await Comment.find().populate('order');
+		const comments = await Comment.find();
 
 		return res.status(200).json({
 			comments,
@@ -19,9 +20,7 @@ const getCommentById = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const comment = await Comment.findById(id).populate(
-			'order'
-		);
+		const comment = await Comment.findById(id);
 
 		if (!comment) {
 			return res.status(404).json({
@@ -38,6 +37,18 @@ const getCommentById = async (req, res) => {
 			message: 'Error al obtener el comentario',
 			error,
 		});
+	}
+};
+
+const getCommentsByOrder = async (req, res) => {
+	const { orderId } = req.params;
+	try {
+		const comments = await Comment.find({
+			order: orderId,
+		});
+		return res.status(200).json({ comments });
+	} catch (error) {
+		console.log(error);
 	}
 };
 
@@ -84,6 +95,7 @@ const deleteComment = async (req, res) => {
 export default {
 	getAllComments,
 	getCommentById,
+	getCommentsByOrder,
 	createComment,
 	deleteComment,
 };

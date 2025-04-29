@@ -33,8 +33,6 @@ const getClientsByPage = async (req, res) => {
 		const clients = await Client.find(query)
 			.sort({ clientNumber: -1 })
 			.limit(limit);
-		/* .populate('product') */
-		/* .populate('client') */
 
 		return res.status(200).json({
 			from: clients.length

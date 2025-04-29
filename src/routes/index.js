@@ -8,11 +8,13 @@ import workStation from './workStation.js';
 import material from './material.js';
 import operation from './operation.js';
 import exchange from './exchange.js';
+import orderFields from './orderFields.js';
 
 const router = Router();
 
 router.use('/client', client);
 router.use('/order', order);
+router.use('/orderFields', orderFields);
 router.use('/comment', comment);
 router.use('/user', user);
 router.use('/task', task);

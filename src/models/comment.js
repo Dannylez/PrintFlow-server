@@ -5,7 +5,6 @@ const { Schema } = mongoose;
 const commentSchema = new Schema({
 	order: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Order',
 	},
 	content: {
 		type: String,
