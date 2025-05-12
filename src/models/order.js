@@ -89,7 +89,6 @@ const orderSchema = new Schema({
 	],
 	budgetEstimate: {
 		type: Number,
-		required: true,
 	},
 	budget: {
 		type: Number,
