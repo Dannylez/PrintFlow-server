@@ -145,7 +145,6 @@ const getFilteredOrders = async (req, res) => {
 										case: { $eq: ['$status', 'Detenida'] },
 										then: 3,
 									},
-
 									{
 										case: {
 											$eq: ['$status', 'Para facturar'],
@@ -168,21 +167,37 @@ const getFilteredOrders = async (req, res) => {
 								default: 3,
 							},
 						},
+						hasDateFinal: {
+							$cond: [
+								{ $ifNull: ['$dateFinal', false] },
+								1,
+								0,
+							],
+						},
+						hasDateEstimate: {
+							$cond: [
+								{ $ifNull: ['$dateEstimate', false] },
+								1,
+								0,
+							],
+						},
 					},
 				},
 				{
 					$sort: {
-						statusPriority: 1, // Ordena primero por el campo statusPriority
-						dateFinal: 1, // Luego por la fecha límite (ascendente)
-						dateEstimate: 1, // Luego por la fecha estimada (ascendente)
+						statusPriority: 1,
+						hasDateFinal: -1, // Los que tienen fecha van primero
+						dateFinal: 1, // Ordena por la fecha
+						hasDateEstimate: -1, // Lo mismo para fecha estimada
+						dateEstimate: 1,
 						orderNumber: -1,
 					},
 				},
 				{
-					$skip: (page - 1) * limit, // Paginación, omite los primeros registros según la página
+					$skip: (page - 1) * limit,
 				},
 				{
-					$limit: limit, // Limita la cantidad de resultados según el límite
+					$limit: limit,
 				},
 			]);
 			orders = await Order.populate(dateOrders, [
