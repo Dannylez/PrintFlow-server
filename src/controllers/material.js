@@ -21,7 +21,7 @@ const getFilteredMaterials = async (req, res) => {
 	const {
 		page = 1,
 		searchTerm = '',
-		limit = 15,
+		limit = 50,
 	} = req.query;
 
 	let query = {};
