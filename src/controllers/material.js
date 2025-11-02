@@ -126,6 +126,56 @@ const updateMaterial = async (req, res) => {
 	}
 };
 
+const bulksUpdateMaterialPrices = async (req, res) => {
+  const factor = Number(String(req.query.factor ?? '').replace(',', '.'));
+  if (!Number.isFinite(factor)) {
+    return res.status(400).json({ message: 'Debes enviar un factor numérico' });
+  }
+
+  try {
+    const result = await Material.updateMany(
+      {},
+      [
+        {
+          $set: {
+            pricePerUnitType: {
+              $let: {
+                vars: {
+                  numVal: {
+                    $toDouble: {
+                      // normaliza coma -> punto ANTES de parsear
+                      $replaceAll: {
+                        input: '$pricePerUnitType',
+                        find: ',',
+                        replacement: '.',
+                      },
+                    },
+                  },
+                },
+                in: {
+                  // multiplica * factor y redondea a 2; SIEMPRE devuelve string con punto
+                  $toString: {
+                    $round: [{ $multiply: ['$$numVal', factor] }, 2],
+                  },
+                },
+              },
+            },
+          },
+        },
+      ]
+    );
+
+    return res.status(200).json({
+      message: `Precios actualizados correctamente (factor ${factor}).`,
+      matched: result.matchedCount ?? result.n,
+      modified: result.modifiedCount ?? result.nModified,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al actualizar precios de materiales', error });
+  }
+};
+
+
 const deleteMaterial = async (req, res) => {
 	const { id } = req.params;
 
@@ -168,6 +218,7 @@ export default {
 	getFilteredMaterials,
 	getMaterialById,
 	createMaterial,
+	bulksUpdateMaterialPrices,
 	updateMaterial,
 	deleteMaterial,
 	deleteAll,

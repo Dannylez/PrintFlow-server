@@ -8,6 +8,7 @@ router
 	.get('/filtered', materialController.getFilteredMaterials)
 	.get('/:id', materialController.getMaterialById)
 	.post('/', materialController.createMaterial)
+	.put('/updateAll', materialController.bulksUpdateMaterialPrices)
 	.put('/:id', materialController.updateMaterial)
 	.delete('/all', materialController.deleteAll)
 	.delete('/:id', materialController.deleteMaterial);
